@@ -1,5 +1,7 @@
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class GameLevel {
     private final String mainText;
@@ -16,6 +18,16 @@ public class GameLevel {
         this.player=player;
         player.getInventory().add(key);
         this.choices=choices;
+    }
+    public static GameLevel ofFile(String filename) {
+        try (Scanner scanner = new Scanner(filename)) {
+            scanner.useDelimiter("~");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new GameLevel(null,null, (GameChoice) null);
     }
 
     public GameChoice[] getCurrentChoices() {
