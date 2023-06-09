@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class GameLevel {
     private final String mainText;
@@ -20,11 +21,20 @@ public class GameLevel {
         this.choices=choices;
     }
     public static GameLevel ofFile(String filename) {
-        try (Scanner scanner = new Scanner(filename)) {
+        String betterFilename = "resources/"+filename;
+        File levelFile = new File(betterFilename);
+        int i = 0;
+        try (Scanner scanner = new Scanner(levelFile)) {
             scanner.useDelimiter("~");
+
+            while (scanner.hasNext()) {
+                String text = scanner.next().trim();
+                if (!text.isEmpty()) {
+                    System.out.println(text);
+                    System.out.println(i++);
+                }
+            }
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return new GameLevel(null,null, (GameChoice) null);
