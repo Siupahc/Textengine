@@ -1,16 +1,27 @@
 import java.util.Arrays;
+import java.util.List;
 
-public abstract class GameLevel {
+public class GameLevel {
     private final String mainText;
     private final GameChoice[] choices;
+    private final Player player;
 
-    public GameLevel(String mainText, GameChoice... choices) {
+    public GameLevel(String mainText,Player player, GameChoice... choices) {
         this.mainText=mainText;
+        this.player=player;
+        this.choices=choices;
+    }
+    public GameLevel(String mainText,Player player,Item key, GameChoice... choices) {
+        this.mainText=mainText;
+        this.player=player;
+        player.getInventory().add(key);
         this.choices=choices;
     }
 
-    public GameChoice[] getChoices() {
-        return choices;
+    public GameChoice[] getCurrentChoices() {
+        List<GameChoice> choiceList = Arrays.asList(choices);
+        choiceList.removeIf((gameChoice -> !gameChoice.isVisibleBy(player)));
+        return choiceList.toArray(new GameChoice[0]);
     }
 
     public String getMainText() {
@@ -20,8 +31,9 @@ public abstract class GameLevel {
     @Override
     public String toString() {
         StringBuilder s1 = new StringBuilder();
-        for (int i = 0; i < choices.length; i++) {
-            s1.append(i + 1).append(" : ").append(choices[i].getChoiceText()).append("\n");
+        GameChoice[] currentChoices = getCurrentChoices();
+        for (int i = 0; i < currentChoices.length; i++) {
+            s1.append(i + 1).append(" : ").append(currentChoices[i].getChoiceText()).append("\n");
         }
         return mainText+"\n"+ s1;
     }

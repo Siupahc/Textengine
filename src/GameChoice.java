@@ -14,4 +14,7 @@ public class GameChoice {
     public String getChoiceText(){
         return choiceText;
     }
+    public boolean isVisibleBy(Player player) {
+        return true;
+    }
 }
