@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -8,6 +9,7 @@ public class GameLevel {
     private final String mainText;
     private final GameChoice[] choices;
     private final Player player;
+    private final static String NONE = "none";
 
     public GameLevel(String mainText,Player player, GameChoice... choices) {
         this.mainText=mainText;
@@ -20,28 +22,63 @@ public class GameLevel {
         player.getInventory().add(key);
         this.choices=choices;
     }
-    public static GameLevel ofFile(String filename) {
+    public static GameLevel ofFile(String filename,Player currentPlayer) {
         String betterFilename = "resources/"+filename;
         File levelFile = new File(betterFilename);
+        String mainText = "";
         int i = 0;
+        int numberOfChoices=0;
+        Item itemReceived = null;
+        int n = 0;
+        boolean firstChoice = true;
+        GameChoice[] gameChoices = new GameChoice[0];
         try (Scanner scanner = new Scanner(levelFile)) {
             scanner.useDelimiter("~");
 
             while (scanner.hasNext()) {
                 String text = scanner.next().trim();
-                if (!text.isEmpty()) {
-                    System.out.println(text);
-                    System.out.println(i++);
+                if (!text.startsWith("//")&&!text.isEmpty()) {
+                    switch (i++) {
+                        case 0: {
+                            mainText=text;
+                            break;
+                        }
+                        case 1: {
+                            itemReceived = Item.itemForString(text);
+                            break;
+                        }
+                        case 2: {
+                            numberOfChoices = Integer.parseInt(text);
+                            break;
+                        }
+                        default: {
+                            if (firstChoice) {
+                                gameChoices = new GameChoice[numberOfChoices];
+                                firstChoice = false;
+                            }
+                            String[] parts = text.split("\\|");
+                            String choiceText = parts[0].trim();
+                            String neededKey = parts[1].trim();
+                            String nextFileName = parts[2].trim();
+                            if (neededKey.equals(NONE)) {
+                                gameChoices[n++] = new GameChoice(nextFileName,choiceText);
+                            }
+                            else {
+                                Item neededItem = Item.itemForString(neededKey);
+                                gameChoices[n++] = new ItemConditionGameChoice(nextFileName,choiceText,neededItem);
+                            }
+                        }
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return new GameLevel(null,null, (GameChoice) null);
+        return new GameLevel(mainText,currentPlayer,gameChoices);
     }
 
     public GameChoice[] getCurrentChoices() {
-        List<GameChoice> choiceList = Arrays.asList(choices);
+        List<GameChoice> choiceList = new ArrayList<>(Arrays.asList(choices));
         choiceList.removeIf((gameChoice -> !gameChoice.isVisibleBy(player)));
         return choiceList.toArray(new GameChoice[0]);
     }
@@ -58,5 +95,15 @@ public class GameLevel {
             s1.append(i + 1).append(" : ").append(currentChoices[i].getChoiceText()).append("\n");
         }
         return mainText+"\n"+ s1;
+    }
+    private static Item getItemFromString(String string) {
+        Item item = null;
+        try {
+            Class<Item> enumClass = Item.class;
+            item = Enum.valueOf(enumClass, string);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 }

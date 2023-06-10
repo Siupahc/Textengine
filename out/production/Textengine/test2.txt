@@ -1,0 +1,4 @@
+~Sympa cette forêt, il y a une petite clé d'ailleurs.~
+~KEY_1~
+~1~
+~Go au premier truc|none|test.txt~
