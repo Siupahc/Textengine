@@ -1,0 +1,5 @@
+~en gros c'est le main texte~ //écrit le texte principal
+~none~ //écrit le nom de l'objet que reçoit le joueur en entrant dans ce niveau. Le nom de l'objet, doit (pour l'instant) être KEY_i, avec 1 entre 5 compris. Si le joueur ne reçoit pas d'objet, il faut écrire "none", sans les guillemets bien sûr.
+~2~ //écrit le nombre total de choix proposés
+~Aller dans la forêt |none|test2.txt~
+~Reculer|KEY_1|test3.txt~

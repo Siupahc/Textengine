@@ -10,11 +10,18 @@ public class GameHandler {
         currentLevel=startLevel;
         this.player=player;
     }
-    public void runGame() {
+    public void runGame() throws LastLevelException {
         System.out.println(currentLevel);
         int chosenIndex = takeUserInput();
         System.out.println("\n");
         currentLevel = GameLevel.ofFile(currentLevel.getCurrentChoices()[chosenIndex-1].getNextLevelFileAsString(),player);
+        if (currentLevel.getCurrentChoices().length==0) {
+            System.out.println(currentLevel);
+            throw new LastLevelException();
+        }
+    }
+    public GameLevel getCurrentLevel() {
+        return currentLevel;
     }
     private int takeUserInput() {
         System.out.println("Faites votre choix : tapez le numéro à côté de l'option voulue, puis appuyez sur enter");

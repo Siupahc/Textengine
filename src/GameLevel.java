@@ -74,6 +74,9 @@ public class GameLevel {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+        if (itemReceived!=null) {
+            return new GameLevel(mainText,currentPlayer,itemReceived,gameChoices);
+        }
         return new GameLevel(mainText,currentPlayer,gameChoices);
     }
 
