@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
         Player player = new Player();
@@ -11,5 +13,11 @@ public class Main {
                 break;
             }
         } while (true);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Tapez stop pour quitter");
+        String text = scanner.nextLine();
+        while (!text.equals("stop")) {
+            text = scanner.nextLine();
+        }
     }
 }

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,7 @@ public class GameLevel {
         int n = 0;
         boolean firstChoice = true;
         GameChoice[] gameChoices = new GameChoice[0];
-        try (Scanner scanner = new Scanner(levelFile)) {
+        try (Scanner scanner = new Scanner(levelFile, StandardCharsets.UTF_8)) {
             scanner.useDelimiter("~");
 
             while (scanner.hasNext()) {
@@ -71,7 +72,7 @@ public class GameLevel {
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         if (itemReceived!=null) {
